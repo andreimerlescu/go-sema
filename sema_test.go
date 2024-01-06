@@ -1,7 +1,11 @@
 package go_sema
 
 import (
+	`fmt`
+	`sync`
+	`sync/atomic`
 	"testing"
+	`time`
 
 	"github.com/stretchr/testify/assert"
 )
@@ -62,6 +66,29 @@ func TestSemaphoreEmpty(t *testing.T) {
 	sem.Release()
 
 	if !sem.IsEmpty() {
+		t.Error("semaphore should be empty")
+	}
+}
+
+func TestReadMeExample(t *testing.T) {
+	workers := 10 // 10 workers
+	mySemaphore := New(workers)
+	var wg sync.WaitGroup
+	var delaySeconds atomic.Int32
+	for i := 0; i < workers*2; i++ {
+		wg.Add(1)
+		mySemaphore.Acquire()
+		go func(i int, wg *sync.WaitGroup) {
+			defer wg.Done()
+			defer mySemaphore.Release()
+			delay := delaySeconds.Add(1)
+			time.Sleep(time.Duration(delay))
+			fmt.Printf("worker %d finished after %d seconds\n", i, delaySeconds.Load())
+		}(i, &wg)
+	}
+	wg.Wait()
+	fmt.Printf("wait group released with %d workers left in the semaphore\n", mySemaphore.Len())
+	if !mySemaphore.IsEmpty() {
 		t.Error("semaphore should be empty")
 	}
 }

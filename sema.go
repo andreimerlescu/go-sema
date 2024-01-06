@@ -1,9 +1,5 @@
 package go_sema
 
-import (
-	"time"
-)
-
 type Semaphore interface {
 	Acquire()
 	Release()
@@ -12,8 +8,7 @@ type Semaphore interface {
 }
 
 type semaphore struct {
-	semC    chan struct{}
-	timeout time.Duration
+	semC chan struct{}
 }
 
 func safe(maxConcurrency int) int {
@@ -30,8 +25,7 @@ func safe(maxConcurrency int) int {
 
 func New(maxConcurrency int) Semaphore {
 	return &semaphore{
-		semC:    make(chan struct{}, safe(maxConcurrency)),
-		timeout: time.Millisecond * 90,
+		semC: make(chan struct{}, safe(maxConcurrency)),
 	}
 }
 
