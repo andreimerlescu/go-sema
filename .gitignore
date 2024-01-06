@@ -1,0 +1,7 @@
+.DS_Store
+._*
+go-sema
+*.exe
+*.so
+*.dll
+.idea
