@@ -82,7 +82,7 @@ func TestReadMeExample(t *testing.T) {
 			defer wg.Done()
 			defer mySemaphore.Release()
 			delay := delaySeconds.Add(1)
-			time.Sleep(time.Duration(delay))
+			time.Sleep(time.Duration(delay) * time.Second)
 			fmt.Printf("worker %d finished after %d seconds\n", i, delaySeconds.Load())
 		}(i, &wg)
 	}
